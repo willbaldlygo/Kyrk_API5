@@ -53,8 +53,19 @@ if res_csv is None:
 
 @st.cache_data(show_spinner="Parsing CSVs…")
 def read_csv(upload):
-    return (pd.read_csv(upload)
-              .rename(columns=lambda c: c.strip().lower().replace(" ", "_")))
+    """Try common encodings so Excel-exported files don't crash."""
+    for enc in ("utf-8", "utf-8-sig", "cp1252", "latin1"):
+        try:
+            df = pd.read_csv(upload, encoding=enc)
+            break
+        except UnicodeDecodeError:
+            upload.seek(0)      # rewind buffer for next attempt
+    else:
+        st.error("Could not decode CSV – please save it as UTF-8 and re-upload.")
+        st.stop()
+
+    df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+    return df
 
 res_df = read_csv(res_csv)
 rec_df = read_csv(rec_csv) if rec_csv else pd.DataFrame()
