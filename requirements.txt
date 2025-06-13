@@ -1,6 +1,5 @@
 streamlit>=1.33
 langchain==0.1.19
-langchain-community==0.0.21
 openai>=1.33
 tiktoken>=0.6
 faiss-cpu>=1.7
