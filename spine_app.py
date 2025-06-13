@@ -70,10 +70,12 @@ def read_csv(upload):
 res_df = read_csv(res_csv)
 rec_df = read_csv(rec_csv) if rec_csv else pd.DataFrame()
 
-prompt = st.text_input("Ask a question…")
+prompt_placeholder = st.empty()
+prompt             = prompt_placeholder.text_input("Ask a question…")
 
-docs = df_to_docs(res_df, "results") + df_to_docs(rec_df, "records")
-main_chain = build_chain(docs)
+with st.spinner("Indexing race data…"):
+    docs = df_to_docs(res_df, "results") + df_to_docs(rec_df, "records")
+    main_chain = build_chain(docs)
 
 fb_chain = None
 if use_fb and fb_html is not None:
