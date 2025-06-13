@@ -70,6 +70,8 @@ def read_csv(upload):
 res_df = read_csv(res_csv)
 rec_df = read_csv(rec_csv) if rec_csv else pd.DataFrame()
 
+prompt = st.text_input("Ask a question…")
+
 docs = df_to_docs(res_df, "results") + df_to_docs(rec_df, "records")
 main_chain = build_chain(docs)
 
@@ -78,7 +80,6 @@ if use_fb and fb_html is not None:
     fb_docs = html_to_docs(fb_html.read())
     fb_chain = build_chain(fb_docs)
 
-prompt = st.text_input("Ask a question…")
 if prompt:
     answer, sources = "", []
     if main_chain:
